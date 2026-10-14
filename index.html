@@ -144,47 +144,189 @@
     .nickname { font-size: clamp(1.15rem, 2.5vw, 1.5rem); color: var(--text); font-weight: 700; margin: 0 0 28px; }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .avatar-wrap { display: grid; place-items: center; }
-    /* Q 版狗狗：眼睛跟著滑鼠，點一下會開心地笑 */
+    /* Q 版黃金獵犬（參考圖端正坐姿）：自然呼吸、視差擺頭與四肢蹲跳互動 */
     .dog {
       position: relative; isolation: isolate; width: min(320px, 72vw); padding: 0;
       background: none; border: 0; border-radius: 24px; -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
     }
     .dog::before {
       content: ""; position: absolute; inset: 4% 2% 2%; z-index: -1;
       border-radius: 36% 64% 58% 42% / 42% 38% 62% 58%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2)); opacity: .16;
+      background: linear-gradient(135deg, #f59e0b, var(--accent-2)); opacity: .16;
       animation: morph 10s ease-in-out infinite;
     }
     @keyframes morph {
       50% { border-radius: 58% 42% 34% 66% / 60% 52% 48% 40%; }
     }
     .dog svg { display: block; width: 100%; height: auto; overflow: visible; }
-    .dog .line { stroke: #8a5a35; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-    .dog .pupil { transition: transform .12s ease-out; }
-    .dog .eyes-open { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
-    @keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
-    .dog .tail { transform-origin: 136px 172px; animation: wag 1.6s ease-in-out infinite; }
-    @keyframes wag { 50% { transform: rotate(-10deg); } }
-    .dog .ear-l { transform-origin: 70px 58px; }
-    .dog .ear-r { transform-origin: 130px 58px; }
+    .dog .line { stroke: #181512; stroke-width: 3.1; stroke-linecap: round; stroke-linejoin: round; }
+    .dog .dog-shadow { transform-origin: 100px 214px; }
+    .dog .breathe {
+      transform-origin: 100px 204px;
+      animation: breathe 3.6s cubic-bezier(.45, .05, .55, .95) infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      50% { transform: translateY(-1.8px) scale(1.012, .99); }
+    }
+    .dog .torso-group { transform-origin: 100px 185px; }
+    .dog .hind-leg-l { transform-origin: 68px 176px; }
+    .dog .hind-leg-r { transform-origin: 132px 176px; }
+    .dog .front-leg-l { transform-origin: 81px 146px; }
+    .dog .front-leg-r { transform-origin: 119px 146px; }
+    .dog .head-sway {
+      transform-origin: 100px 80px;
+      animation: head-idle 5.2s cubic-bezier(.45, .05, .55, .95) infinite;
+    }
+    @keyframes head-idle {
+      0%, 100% { transform: rotate(-1deg) translateY(0); }
+      50% { transform: rotate(1.2deg) translateY(-1.5px); }
+    }
+    .dog .eyes-open { transform-box: fill-box; transform-origin: center; animation: blink 5.2s infinite; }
+    @keyframes blink {
+      0%, 44%, 48%, 94%, 100% { transform: scaleY(1); }
+      46%, 96% { transform: scaleY(.1); }
+    }
+    .dog .tail {
+      transform-origin: 56px 178px;
+      animation: wag 1.6s cubic-bezier(.42, 0, .58, 1) infinite;
+    }
+    @keyframes wag {
+      0%, 100% { transform: rotate(-6deg); }
+      50% { transform: rotate(12deg); }
+    }
+    .dog .ear-l {
+      transform-origin: 70px 34px;
+      animation: ear-idle-l 3.6s ease-in-out infinite;
+    }
+    .dog .ear-r {
+      transform-origin: 130px 34px;
+      animation: ear-idle-r 3.6s ease-in-out infinite;
+    }
+    @keyframes ear-idle-l { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-1.8deg); } }
+    @keyframes ear-idle-r { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(1.8deg); } }
+    .dog .ear-vibe {
+      opacity: .75;
+      transition: opacity .25s ease, transform .25s ease;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .dog:hover .ear-vibe { opacity: 1; transform: scale(1.06); }
     .dog .happy-face, .dog .heart { opacity: 0; }
-    .dog .cheek { opacity: .5; transition: opacity .2s; }
+    .dog .face-normal, .dog .happy-face { transition: opacity .18s ease; }
+    .dog .cheek { opacity: .75; transition: opacity .25s ease, transform .25s ease; transform-box: fill-box; transform-origin: center; }
+    .dog:hover .tail { animation-duration: .8s; }
+    .dog:hover .cheek { opacity: .95; transform: scale(1.08); }
+
+    /* 點擊時：端正坐姿下蹲蓄力 → 四肢關節連動蹬地跳起 → 緩衝落地回坐 */
+    .dog .whole { transform-origin: 100px 210px; }
     .dog.happy .face-normal { opacity: 0; }
     .dog.happy .happy-face { opacity: 1; }
-    .dog.happy .cheek { opacity: .95; }
-    .dog.happy .whole { animation: hop .45s ease-out 2; }
-    .dog.happy .tail { animation-duration: .22s; }
-    .dog.happy .ear-l { animation: flap-l .22s ease-in-out 4; }
-    .dog.happy .ear-r { animation: flap-r .22s ease-in-out 4; }
-    .dog.happy .heart { animation: float-up 1.4s ease-out forwards; }
-    .dog.happy .heart-2 { animation-delay: .25s; }
-    @keyframes hop { 40% { transform: translateY(-14px); } }
-    @keyframes flap-l { 50% { transform: rotate(-9deg); } }
-    @keyframes flap-r { 50% { transform: rotate(9deg); } }
+    .dog.happy .cheek { opacity: 1; transform: scale(1.15); }
+    .dog.happy .dog-shadow { animation: shadow-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .whole { animation: whole-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .head-sway { animation: head-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .hind-leg-l { animation: hind-leg-l-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .hind-leg-r { animation: hind-leg-r-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .front-leg-l { animation: front-leg-l-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .front-leg-r { animation: front-leg-r-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .tail { animation: tail-jump 1.3s ease-in-out forwards; }
+    .dog.happy .ear-l { animation: ear-l-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .ear-r { animation: ear-r-jump 1.3s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .dog.happy .happy-tongue {
+      transform-origin: 100px 76px;
+      animation: pant-fast .24s ease-in-out infinite;
+    }
+    .dog.happy .heart { animation: float-up 1.5s cubic-bezier(.22, 1, .36, 1) forwards; }
+    .dog.happy .heart-1 { animation-delay: .26s; }
+    .dog.happy .heart-2 { animation-delay: .42s; }
+    .dog.happy .heart-3 { animation-delay: .56s; }
+
+    @keyframes shadow-jump {
+      0%, 100% { transform: scale(1, 1); opacity: .11; }
+      22% { transform: scale(1.14, 1.08); opacity: .16; }
+      48%, 58% { transform: scale(.65, .72); opacity: .05; }
+      78% { transform: scale(1.1, 1.05); opacity: .15; }
+      90% { transform: scale(.99, 1); opacity: .11; }
+    }
+    @keyframes whole-jump {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      22% { transform: translateY(2px) scale(1.06, .89); }
+      48% { transform: translateY(-24px) scale(.96, 1.05); }
+      58% { transform: translateY(-20px) scale(.98, 1.02); }
+      78% { transform: translateY(2px) scale(1.04, .92); }
+      90% { transform: translateY(-2px) scale(.99, 1.01); }
+    }
+    @keyframes head-jump {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      22% { transform: translateY(4px) rotate(-3deg); }
+      48% { transform: translateY(-4px) rotate(4deg); }
+      58% { transform: translateY(-2px) rotate(-3deg); }
+      78% { transform: translateY(3px) rotate(2deg); }
+    }
+    @keyframes hind-leg-l-jump {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1, 1); }
+      22% { transform: translate(-3px, 2px) rotate(-6deg) scale(1.06, .92); }
+      48% { transform: translate(2px, 6px) rotate(14deg) scale(.96, 1.06); }
+      58% { transform: translate(1px, 4px) rotate(10deg); }
+      78% { transform: translate(-2px, 2px) rotate(-4deg) scale(1.04, .94); }
+    }
+    @keyframes hind-leg-r-jump {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1, 1); }
+      22% { transform: translate(3px, 2px) rotate(6deg) scale(1.06, .92); }
+      48% { transform: translate(-2px, 6px) rotate(-14deg) scale(.96, 1.06); }
+      58% { transform: translate(-1px, 4px) rotate(-10deg); }
+      78% { transform: translate(2px, 2px) rotate(4deg) scale(1.04, .94); }
+    }
+    @keyframes front-leg-l-jump {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scaleY(1); }
+      22% { transform: translate(-1px, 2px) rotate(5deg) scaleY(.93); }
+      46% { transform: translate(-1px, -5px) rotate(11deg) scaleY(.93); }
+      56% { transform: translate(0, -6px) rotate(4deg) scaleY(.91); }
+      64% { transform: translate(-1px, -4px) rotate(9deg) scaleY(.95); }
+      78% { transform: translate(-1px, 2px) rotate(4deg) scaleY(.94); }
+    }
+    @keyframes front-leg-r-jump {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scaleY(1); }
+      22% { transform: translate(1px, 2px) rotate(-5deg) scaleY(.93); }
+      46% { transform: translate(1px, -6px) rotate(-4deg) scaleY(.91); }
+      56% { transform: translate(1px, -5px) rotate(-11deg) scaleY(.93); }
+      64% { transform: translate(0, -4px) rotate(-7deg) scaleY(.95); }
+      78% { transform: translate(1px, 2px) rotate(-4deg) scaleY(.94); }
+    }
+    @keyframes tail-jump {
+      0%, 100% { transform: rotate(-6deg); }
+      22% { transform: rotate(-18deg); }
+      38% { transform: rotate(22deg); }
+      48% { transform: rotate(-14deg); }
+      58% { transform: rotate(24deg); }
+      68% { transform: rotate(-12deg); }
+      78% { transform: rotate(18deg); }
+      88% { transform: rotate(-8deg); }
+    }
+    @keyframes ear-l-jump {
+      0%, 100% { transform: rotate(0deg); }
+      22% { transform: rotate(-5deg) translateY(1px); }
+      42% { transform: rotate(10deg) translateY(-2px); }
+      58% { transform: rotate(-15deg) translateY(-4px); }
+      78% { transform: rotate(6deg) translateY(2px); }
+    }
+    @keyframes ear-r-jump {
+      0%, 100% { transform: rotate(0deg); }
+      22% { transform: rotate(5deg) translateY(1px); }
+      42% { transform: rotate(-10deg) translateY(-2px); }
+      58% { transform: rotate(15deg) translateY(-4px); }
+      78% { transform: rotate(-6deg) translateY(2px); }
+    }
+    @keyframes pant-fast {
+      0%, 100% { transform: translateY(0) scaleY(1); }
+      50% { transform: translateY(2px) scaleY(1.12); }
+    }
     @keyframes float-up {
-      0% { opacity: 0; transform: translateY(0) scale(.6); }
+      0% { opacity: 0; transform: translateY(4px) scale(.5); }
       25% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-34px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-38px) scale(1.15); }
     }
     .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 28px; color: var(--muted); font-size: .92rem; }
     .meta span { display: inline-flex; align-items: center; gap: 6px; }
@@ -364,81 +506,128 @@
           <div class="meta" id="heroMeta"></div>
         </div>
         <div class="avatar-wrap">
-          <button class="dog" id="dog" type="button" aria-label="摸摸狗狗" title="點我一下～">
-            <svg viewBox="0 0 200 220" aria-hidden="true">
-              <ellipse cx="100" cy="212" rx="66" ry="7" fill="#000" opacity=".1"/>
+          <button class="dog" id="dog" type="button" aria-label="摸摸黃金獵犬" title="點我摸摸頭～">
+            <svg viewBox="0 0 200 225" aria-hidden="true">
+              <!-- 底部柔和陰影（隨蹲下放大、跳起縮小變淡） -->
+              <ellipse class="dog-shadow" cx="100" cy="215" rx="66" ry="7" fill="#000" opacity=".1"/>
               <g class="whole">
-                <!-- 捲尾巴 -->
-                <g class="tail">
-                  <ellipse class="line" cx="152" cy="160" rx="25" ry="22" fill="#e9a55f"/>
-                  <path d="M140 162 q2 -12 14 -11 q10 2 8 11 q-3 7 -10 5" fill="none" stroke="#fff3e2" stroke-width="7" stroke-linecap="round"/>
-                </g>
-                <!-- 身體 -->
-                <ellipse class="line" cx="100" cy="164" rx="47" ry="44" fill="#e9a55f"/>
-                <ellipse cx="100" cy="160" rx="27" ry="36" fill="#fff3e2"/>
-                <!-- 後腳（露出肉球） -->
-                <ellipse class="line" cx="62" cy="188" rx="21" ry="18" fill="#e9a55f"/>
-                <ellipse class="line" cx="138" cy="188" rx="21" ry="18" fill="#e9a55f"/>
-                <ellipse class="line" cx="52" cy="200" rx="14" ry="11" fill="#fff3e2"/>
-                <ellipse class="line" cx="148" cy="200" rx="14" ry="11" fill="#fff3e2"/>
-                <g fill="#f2a0a0">
-                  <ellipse cx="52" cy="203" rx="5.5" ry="4.5"/>
-                  <circle cx="45" cy="196" r="2.4"/><circle cx="52" cy="193.5" r="2.4"/><circle cx="59" cy="196" r="2.4"/>
-                  <ellipse cx="148" cy="203" rx="5.5" ry="4.5"/>
-                  <circle cx="141" cy="196" r="2.4"/><circle cx="148" cy="193.5" r="2.4"/><circle cx="155" cy="196" r="2.4"/>
-                </g>
-                <!-- 前腳 -->
-                <ellipse class="line" cx="86" cy="192" rx="11" ry="17" fill="#fff3e2"/>
-                <ellipse class="line" cx="114" cy="192" rx="11" ry="17" fill="#fff3e2"/>
-                <path class="line" d="M83 204 v4 M89 204 v4 M111 204 v4 M117 204 v4" stroke-width="1.8"/>
-                <!-- 立耳 -->
-                <g class="ear-l">
-                  <path class="line" d="M48 70 Q48 30 62 20 Q78 28 92 46 Z" fill="#e9a55f"/>
-                  <path d="M57 60 Q58 38 64 31 Q74 37 83 47 Z" fill="#f8c9a6"/>
-                </g>
-                <g class="ear-r">
-                  <path class="line" d="M152 70 Q152 30 138 20 Q122 28 108 46 Z" fill="#e9a55f"/>
-                  <path d="M143 60 Q142 38 136 31 Q126 37 117 47 Z" fill="#f8c9a6"/>
-                </g>
-                <!-- 頭與奶油色臉頰 -->
-                <ellipse class="line" cx="100" cy="86" rx="60" ry="50" fill="#e9a55f"/>
-                <ellipse cx="100" cy="107" rx="46" ry="29" fill="#fff3e2"/>
-                <ellipse cx="78" cy="68" rx="6" ry="3.5" fill="#fff3e2"/>
-                <ellipse cx="122" cy="68" rx="6" ry="3.5" fill="#fff3e2"/>
-                <!-- 腮紅 -->
-                <ellipse class="cheek" cx="62" cy="106" rx="10" ry="6" fill="#ff9fb0"/>
-                <ellipse class="cheek" cx="138" cy="106" rx="10" ry="6" fill="#ff9fb0"/>
-                <!-- 平常的眼睛與嘴巴 -->
-                <g class="face-normal">
-                  <g class="eyes-open">
-                    <ellipse class="line" cx="78" cy="87" rx="11.5" ry="12.5" fill="#fff" stroke-width="2.2"/>
-                    <ellipse class="line" cx="122" cy="87" rx="11.5" ry="12.5" fill="#fff" stroke-width="2.2"/>
-                    <g class="pupil" data-cx="78" data-cy="87">
-                      <circle cx="78" cy="87" r="7.5" fill="#2b1b10"/>
-                      <circle cx="75.5" cy="84" r="2.6" fill="#fff"/>
-                      <circle cx="81" cy="90" r="1.2" fill="#fff"/>
+                <g class="breathe">
+                  <!-- 左下探出的羽狀尾巴（對應參考圖坐姿位置） -->
+                  <g class="tail">
+                    <path class="line" d="M64 173 C44 171 28 180 21 196 C35 197 50 193 64 185 Z" fill="#dfb07b"/>
+                    <path class="line" d="M27 195 C33 187 41 182 50 180 M35 195 C41 190 47 187 53 185" fill="none"/>
+                  </g>
+
+                  <!-- 身體與四肢關節分層（參考圖端正坐姿：四腳平踩地面、前腿直立、後腿彎曲於兩側） -->
+                  <g class="body-group" id="dogBody">
+                    <!-- 左右彎曲後腿與三趾平踩後腳掌 -->
+                    <g class="hind-leg-l">
+                      <path class="line" d="M66 146 C51 146 48 168 55 189 C46 193 46 203 58 203 L73 203 C76 203 78 197 75 191 Z" fill="#dfb07b"/>
+                      <path class="line" d="M61 178 C64 184 67 188 71 190 M54 194 C53 198 53 201 54 203 M62 194 C62 198 62 201 63 203" fill="none"/>
                     </g>
-                    <g class="pupil" data-cx="122" data-cy="87">
-                      <circle cx="122" cy="87" r="7.5" fill="#2b1b10"/>
-                      <circle cx="119.5" cy="84" r="2.6" fill="#fff"/>
-                      <circle cx="125" cy="90" r="1.2" fill="#fff"/>
+                    <g class="hind-leg-r">
+                      <path class="line" d="M134 146 C149 146 152 168 145 189 C154 193 154 203 142 203 L127 203 C124 203 122 197 125 191 Z" fill="#dfb07b"/>
+                      <path class="line" d="M139 178 C136 184 133 188 129 190 M146 194 C147 198 147 201 146 203 M138 194 C138 198 138 201 137 203" fill="none"/>
+                    </g>
+
+                    <!-- 端正坐姿軀幹與兩側層疊毛束外輪廓 -->
+                    <g class="torso-group">
+                      <path d="M66 80 L134 80 L136 168 L114 195 Q100 199 86 195 L64 168 Z" fill="#dfb07b"/>
+                      <!-- 身體左右兩側向外垂落的層疊毛流 -->
+                      <path class="line" d="M68 82 C65 88 63 92 61 95 M66 91 C63 98 61 103 59 106 M65 102 C60 111 59 119 60 125 M63 115 C61 127 61 141 62 155 M66 134 C65 147 66 159 69 166 M62 157 C64 162 66 166 69 169 M62 166 C64 170 67 173 70 175" fill="none"/>
+                      <path class="line" d="M132 82 C135 88 137 92 139 95 M134 91 C137 98 139 103 141 106 M135 102 C140 111 141 119 140 125 M137 115 C139 127 139 141 138 155 M134 134 C135 147 134 159 131 166 M138 157 C136 162 134 166 131 169 M138 166 C136 170 133 173 130 175" fill="none"/>
+                      <!-- 兩前腿間的腹部底線與胸側線 -->
+                      <path class="line" d="M87 194 Q100 198 113 194 M86 148 C88 161 91 168 95 172 M114 148 C112 161 109 168 105 172" fill="none"/>
+                    </g>
+
+                    <!-- 左右直立前腿與三趾前腳掌（上緣與胸口同色無縫銜接，擺動時不分離） -->
+                    <g class="front-leg-l">
+                      <path d="M67 142 L88 142 L87 196 C91 201 90 212 77 212 C63 212 61 201 66 196 Z" fill="#dfb07b"/>
+                      <path class="line" d="M67 154 C67 172 68 188 66 196 C61 201 63 212 77 212 C90 212 91 201 87 196 C86 184 86 166 86 148" fill="none"/>
+                      <path class="line" d="M72 201 C71 205 71 209 72 212 M81 201 C82 205 82 209 81 212" fill="none"/>
+                    </g>
+                    <g class="front-leg-r">
+                      <path d="M112 142 L133 142 L134 196 C139 201 137 212 123 212 C110 212 109 201 113 196 Z" fill="#dfb07b"/>
+                      <path class="line" d="M114 148 C114 166 114 184 113 196 C109 201 110 212 123 212 C137 212 139 201 134 196 C132 188 133 172 133 154" fill="none"/>
+                      <path class="line" d="M119 201 C118 205 118 209 119 212 M128 201 C129 205 129 209 128 212" fill="none"/>
+                    </g>
+
+                    <!-- 胸前雙層交錯 V 字茂密毛流（對應參考圖胸毛筆觸） -->
+                    <g class="chest-ruff">
+                      <path class="line" d="M75 92 C78 101 81 107 85 111 M84 103 C86 108 88 112 90 115 M125 92 C122 101 119 107 115 111 M116 103 C114 108 112 112 110 115 M121 111 C119 115 117 118 115 121" fill="none"/>
+                      <path class="line" d="M81 123 C82 129 85 134 88 137 M88 128 C89 134 91 138 94 141 M95 134 C96 139 97 142 99 145 M105 144 C107 141 108 138 109 135 M111 138 C114 133 116 128 117 123 M120 128 C122 125 124 121 125 118" fill="none"/>
                     </g>
                   </g>
-                  <path class="line" d="M100 108 v4 M100 112 q-5 6 -10 1 M100 112 q5 6 10 1" fill="none" stroke-width="2.2"/>
+
+                  <!-- 頭部與雙耳（含自然呼吸擺動與滑鼠視差） -->
+                  <g class="head-sway">
+                    <g id="dogHead">
+                      <!-- 圓潤頭頂底色與輪廓 -->
+                      <path d="M72 26 C86 16 114 16 128 26 C138 36 136 74 128 86 L72 86 C64 74 62 36 72 26 Z" fill="#dfb07b"/>
+                      <path class="line" d="M74 26 C87 16 113 16 126 26" fill="none"/>
+
+                      <!-- 左垂耳與外側雙動態弧線 -->
+                      <g class="ear-l">
+                        <g id="earTrackL">
+                          <path class="line" d="M70 28 C54 36 44 52 45 66 C46 71 49 75 53 80 C57 86 64 87 69 81 C74 74 74 62 71 52 C69 45 71 37 74 32" fill="#dfb07b"/>
+                          <path class="line ear-vibe" d="M58 25 C51 29 46 35 44 42 M41 47 C37 55 36 63 38 71" fill="none"/>
+                        </g>
+                      </g>
+                      <!-- 右垂耳與外側雙動態弧線 -->
+                      <g class="ear-r">
+                        <g id="earTrackR">
+                          <path class="line" d="M130 28 C146 36 156 52 155 66 C154 71 151 75 147 80 C143 86 136 87 131 81 C126 74 126 62 129 52 C131 45 129 37 126 32" fill="#dfb07b"/>
+                          <path class="line ear-vibe" d="M142 25 C149 29 154 35 156 42 M159 47 C163 55 164 63 162 71" fill="none"/>
+                        </g>
+                      </g>
+
+                      <!-- 臉頰下緣弧線與粉紅橢圓腮紅 -->
+                      <path class="line" d="M73 74 C75 79 77 82 79 84 M127 74 C125 79 123 82 121 84" fill="none"/>
+                      <ellipse class="cheek" cx="77" cy="59" rx="8.5" ry="3.6" fill="#ef7c8e"/>
+                      <ellipse class="cheek" cx="123" cy="59" rx="8.5" ry="3.6" fill="#ef7c8e"/>
+
+                      <!-- 平常的直立橢圓黑眼睛（隨游標移動） -->
+                      <g class="face-normal">
+                        <g class="eyes-open">
+                          <g class="pupil" data-cx="84" data-cy="49">
+                            <ellipse cx="84" cy="49" rx="4.2" ry="6.2" fill="#181512"/>
+                          </g>
+                          <g class="pupil" data-cx="116" data-cy="49">
+                            <ellipse cx="116" cy="49" rx="4.2" ry="6.2" fill="#181512"/>
+                          </g>
+                        </g>
+                      </g>
+
+                      <!-- 開心笑彎的眼睛 -->
+                      <g class="happy-face">
+                        <path class="line" d="M77 51 Q84 42 91 51 M109 51 Q116 42 123 51" fill="none"/>
+                      </g>
+
+                      <!-- 立體口鼻部（隨游標微幅視差移動） -->
+                      <g id="dogMuzzle">
+                        <!-- 平常 W 型微笑與圓弧下唇 -->
+                        <g class="face-normal">
+                          <path class="line" d="M82 67 C82 80 97 80 100 69 C103 80 118 80 118 67" fill="none"/>
+                          <path class="line" d="M91 77 Q100 83 109 77" fill="none"/>
+                        </g>
+                        <!-- 開心時的燦笑與吐舌 -->
+                        <g class="happy-face">
+                          <g class="happy-tongue">
+                            <path class="line" d="M91 74 C91 90 109 90 109 74 Z" fill="#f28b9b"/>
+                          </g>
+                          <path class="line" d="M82 67 C82 80 97 80 100 69 C103 80 118 80 118 67" fill="#dfb07b"/>
+                        </g>
+                        <!-- 倒三角圓角黑鼻頭 -->
+                        <path d="M89 59 C89 54 111 54 111 59 C111 66 104 69 100 69 C96 69 89 66 89 59 Z" fill="#181512"/>
+                      </g>
+                    </g>
+                  </g>
                 </g>
-                <!-- 開心的臉 -->
-                <g class="happy-face">
-                  <path class="line" d="M67 90 Q78 77 89 90 M111 90 Q122 77 133 90" fill="none" stroke-width="3.5"/>
-                  <path class="line" d="M85 111 Q100 138 115 111 Q100 116 85 111 Z" fill="#8a2f2f" stroke-width="2.2"/>
-                  <path d="M92 123 Q100 134 108 123 Q100 118 92 123 Z" fill="#ff8fa3"/>
-                </g>
-                <!-- 鼻子 -->
-                <path d="M92 100 Q100 96 108 100 Q106 107 100 108 Q94 107 92 100 Z" fill="#2b1b10"/>
-                <ellipse cx="97.5" cy="99.5" rx="2.6" ry="1.3" fill="#fff" opacity=".7"/>
               </g>
               <!-- 開心時冒出的愛心 -->
-              <path class="heart heart-1" d="M178 40 c-4 -7 -14 -3 -10 5 l10 10 l10 -10 c4 -8 -6 -12 -10 -5 z" fill="#ff6b8a"/>
-              <path class="heart heart-2" d="M34 44 c-3 -5 -10 -2 -7 4 l7 7 l7 -7 c3 -6 -4 -9 -7 -4 z" fill="#ff6b8a"/>
+              <path class="heart heart-1" d="M174 38 c-4 -7 -14 -3 -10 5 l10 10 l10 -10 c4 -8 -6 -12 -10 -5 z" fill="#ff6b8a"/>
+              <path class="heart heart-2" d="M30 42 c-3 -5 -10 -2 -7 4 l7 7 l7 -7 c3 -6 -4 -9 -7 -4 z" fill="#ff6b8a"/>
+              <path class="heart heart-3" d="M154 18 c-2.5 -4.5 -8.5 -2 -6 3.5 l6 6 l6 -6 c2.5 -5.5 -3.5 -8 -6 -3.5 z" fill="#fbbf24"/>
             </svg>
           </button>
         </div>
@@ -696,25 +885,73 @@
     const dog = $("#dog");
     const dogSvg = $("svg", dog);
     const pupils = $$(".pupil", dog);
-    let lookFrame = 0;
-    function lookAt(x, y) {
+    const dogHead = $("#dogHead", dog);
+    const dogMuzzle = $("#dogMuzzle", dog);
+    const dogBody = $("#dogBody", dog);
+    const earTrackL = $("#earTrackL", dog);
+    const earTrackR = $("#earTrackR", dog);
+    // 透過線性插值（Lerp）與多層視差讓眼神、口鼻、歪頭與垂耳自然連動
+    const pointerTarget = { x: 0, y: 0, active: false };
+    const pointerCurrent = { x: 0, y: 0 };
+    let animFrame = 0;
+
+    function updateDogTarget(clientX, clientY) {
       const r = dogSvg.getBoundingClientRect();
       if (!r.width) return;
-      const scale = r.width / 200;                       // viewBox 寬 200
+      const cx = r.left + r.width * 0.5;
+      const cy = r.top + r.height * 0.42;
+      const maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.45;
+      pointerTarget.x = Math.max(-1, Math.min(1, (clientX - cx) / maxDist));
+      pointerTarget.y = Math.max(-1, Math.min(1, (clientY - cy) / maxDist));
+      pointerTarget.active = true;
+      if (!animFrame) animFrame = requestAnimationFrame(tickDogMotion);
+    }
+
+    function tickDogMotion() {
+      const ease = pointerTarget.active ? 0.14 : 0.08;
+      pointerCurrent.x += (pointerTarget.x - pointerCurrent.x) * ease;
+      pointerCurrent.y += (pointerTarget.y - pointerCurrent.y) * ease;
+
+      const nx = pointerCurrent.x;
+      const ny = pointerCurrent.y;
+
+      if (dogMuzzle) {
+        dogMuzzle.style.transform = "translate(" + (nx * 2.2).toFixed(2) + "px, " + (ny * 1.5).toFixed(2) + "px)";
+      }
+      if (dogHead) {
+        dogHead.style.transformOrigin = "100px 80px";
+        dogHead.style.transform = "translate(" + (nx * 2.8).toFixed(2) + "px, " + (ny * 1.8).toFixed(2) + "px) rotate(" + (nx * 4.2).toFixed(2) + "deg)";
+      }
+      if (earTrackL && earTrackR) {
+        earTrackL.style.transformOrigin = "70px 34px";
+        earTrackR.style.transformOrigin = "130px 34px";
+        earTrackL.style.transform = "rotate(" + (-nx * 2.8 - ny * 1.4).toFixed(2) + "deg) translateY(" + (ny * 1.0).toFixed(2) + "px)";
+        earTrackR.style.transform = "rotate(" + (-nx * 2.8 + ny * 1.4).toFixed(2) + "deg) translateY(" + (ny * 1.0).toFixed(2) + "px)";
+      }
+      if (dogBody) {
+        dogBody.style.transformOrigin = "100px 200px";
+        dogBody.style.transform = "translate(" + (nx * 1.0).toFixed(2) + "px, " + (ny * 0.5).toFixed(2) + "px)";
+      }
+      if (Math.hypot(pointerTarget.x - pointerCurrent.x, pointerTarget.y - pointerCurrent.y) > 0.002) {
+        animFrame = requestAnimationFrame(tickDogMotion);
+      } else {
+        animFrame = 0;
+      }
+      const dx = nx, dy = ny, dist = 1, move = 2.8;
       pupils.forEach((p) => {
-        const dx = x - (r.left + p.dataset.cx * scale);
-        const dy = y - (r.top + p.dataset.cy * scale);
-        const dist = Math.hypot(dx, dy) || 1;
-        const move = Math.min(4.5, dist / (25 * scale));  // 越遠轉得越多，最多 4.5
         p.style.transform = `translate(${(dx / dist) * move}px, ${(dy / dist) * move}px)`;
       });
     }
     document.addEventListener("pointermove", (e) => {
-      cancelAnimationFrame(lookFrame);
-      lookFrame = requestAnimationFrame(() => lookAt(e.clientX, e.clientY));
+      updateDogTarget(e.clientX, e.clientY);
     }, { passive: true });
-    document.addEventListener("pointerout", (e) => {  // 滑鼠離開視窗時眼睛回正
-      if (!e.relatedTarget) pupils.forEach((p) => { p.style.transform = ""; });
+    document.addEventListener("pointerout", (e) => {  // 滑鼠離開視窗時平滑回正
+      if (!e.relatedTarget) {
+        pointerTarget.x = 0;
+        pointerTarget.y = 0;
+        pointerTarget.active = false;
+        if (!animFrame) animFrame = requestAnimationFrame(tickDogMotion);
+      }
     });
     dog.addEventListener("click", () => {
       dog.classList.remove("happy");
